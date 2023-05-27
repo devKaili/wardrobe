@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 // define color setting for console output
 #define BLACK "\033[0;30m"
@@ -17,7 +18,7 @@
 
 
 // function declaration
-void appIntroduction(), mainMenu(), invalidInput(), programExit(), wearAssist();
+void appIntroduction(), mainMenu(), invalidInput(), programExit(), wearAssist(), clearInputBuffer();;
 
 int inputRangeCheck(int userInput, int maxVal);
 
@@ -35,7 +36,7 @@ void appIntroduction()
 {
     CLEAR
     printf("Vitejte v aplikaci pro asistenci pri oblekani.\nTato aplikace vam poradi co si vzit na sebe, s ohledem na aktualni venkovni teplotu.\n");
-    printf("Teplotu zadava uzivatel sam, jelikoz aplikace neni schopna se pripojit k internetum aby si zjistila teplotu sama.\nStisknete Enter pro pokracovani...");
+    printf("Teplotu zadava uzivatel sam, jelikoz aplikace neni schopna se pripojit k internetu aby si zjistila teplotu sama.\nStisknete Enter pro pokracovani...");
     getchar();
 }
 
@@ -85,6 +86,7 @@ void invalidInput()
 void wearAssist()
 {
     int temperature;
+    char message[200];
     CLEAR
     printf(CYAN"----- ASISTENT PRI OBLEKANI -----\n\n"WHITE);
     printf("Zadejte aktualni teplotu ve stupnich celsia: ");
@@ -92,27 +94,27 @@ void wearAssist()
 
     if (temperature >= -60 && temperature <= -10)
     {
-        // fucknig freezing
+        strcpy(message, "Zimni bunda, mikina, podvlekaci tricko nebo svetr. Dale puncochace a zimni kalhoty.");
     }
     else if (temperature >= -9 && temperature <= 0)
     {
-        // freezing
+        strcpy(message, "Zimni bunda, mikina. Dlouhe kalhoty");
     }
     else if (temperature >= 1 && temperature <= 10)
     {
-        // cold
+        strcpy(message, "Zimni bunda a dlouhe kalhoty.");
     }
     else if (temperature >= 10 && temperature <= 20)
     {
-        // less cold
+        strcpy(message, "Mikina a dlouhe nebo kratke kalhoty.");
     }
     else if (temperature >= 20 && temperature <= 30)
     {
-        // warm
+        strcpy(message, "Tricko s kratkym rukavem, maximalne mikina a kratke kalhoty.");
     }
     else if (temperature >= 30 && temperature <= 60)
     {
-        // fucking sauna hot
+        strcpy(message, "Tricko s kratkym rukavem a kratke kalhoty.");
     }
     else
     {
@@ -122,7 +124,20 @@ void wearAssist()
         wearAssist();
     }
 
+    printf("Zadali jste, ze venkovni teplota je: "YELLOW"%d%cC"WHITE".\nDoporucene obleceni pro tuto teplotu je:\n%s\n\n", temperature, 248,message);
+    sleep(2);
+    clearInputBuffer();
+    printf("Stisknete Enter pro navrat do hlavniho menu...");
+    getchar();
+    mainMenu();
+}
 
+// clears input buffer
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        // Discard characters until a newline is encountered
+    }
 }
 
 // make sure that the user wants to exit the program and if no, return him to mainMenu()
